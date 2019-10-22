@@ -1,0 +1,24 @@
+#!/bin/bash -login
+#PBS -N test
+##PBS -A  your_account
+#PBS -l walltime=00:30:00,nodes=4:ppn=1:xk
+#PBS -e $PBS_JOBID.err
+#PBS -o $PBS_JOBID.out
+##PBS -m abe
+##PBS -M your_email_address
+##PBS -V
+
+cd $PBS_O_WORKDIR
+module swap PrgEnv-cray PrgEnv-gnu
+module load cudatoolkit
+module unload darshan
+export MPICH_ENV_DISPLAY=1
+
+echo STARTING `date`
+aprun -n4 -N1 ./pmcl3d \
+ -X 320 -Y 320 -Z 2048 -x 2 -y 2 \
+ --TMAX 4.0   --DH 40.0 --DT 0.002 \
+ --NSRC 1 --NST 101  \
+--IFAULT 1 --MEDIASTART 2 --READ_STEP 101 --WRITE_STEP 100 \
+--NSKPX 2 --NSKPY 2   --NTISKP 20   -c output_ckp/ckp   -o output_sfc   --INSRC input/source   --INVEL input/mesh
+echo STARTING `date`
