@@ -2,6 +2,7 @@
 
 env=`python3 inputs.py`
 eval $env # eq_id X Y Z DT
+mkdir ./results
 mkdir ./results/${eq_id}
 mkdir ./results/${eq_id}/mesh_source
 mkdir ./results/${eq_id}/output_ckp
