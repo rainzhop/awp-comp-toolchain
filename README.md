@@ -15,3 +15,11 @@
 ## 项目目标
 
 期望形成一个工具链，结合awp-odc-os，在输入从[CMT](https://www.globalcmt.org/)获取的震源数据后，可自动完成模拟和成像。
+
+## 备忘
+
+awp-odc需要mpi+cuda环境。
+
+目前在ubuntu 18.04上测试通过，使用mpich，nv驱动418，cuda版本10.0。
+
+
