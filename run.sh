@@ -17,9 +17,9 @@ cd ..
 
 sleep 1
 echo STARTING `date`
-mpirun -n 1 ./awp-odc-os/run/pmcl3d                             \
- -X $X -Y $Y -Z $Z -x 1 -y 1                                 \
- --TMAX 40.0 --DH 400.0 --DT $DT                               \
+mpirun -n 1 ./awp-odc-os/src/pmcl3d                             \
+ -X $X -Y $Y -Z $Z -x 1 -y 1                                    \
+ --TMAX 40.0 --DH 400.0 --DT $DT                                \
  --NSRC 1 --NST 1000                                            \
  --IFAULT 1 --MEDIASTART 2                                      \
  --READ_STEP 101 --WRITE_STEP 1000                              \
