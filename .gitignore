@@ -3,3 +3,10 @@ __pycache__/
 *.o
 pmcl3d
 env/
+.idea/
+*.grd
+f.txt
+ttt.cpt
+gmt.conf
+gmt.history
+

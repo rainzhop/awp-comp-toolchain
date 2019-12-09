@@ -5,10 +5,6 @@ from numpy import sin, cos, exp, pi, sqrt, cross
 from numpy.linalg import norm
 
 
-Source_TMAX = 20 # Second
-dt = 0.02
-dh = 400
-
 Source_Time_Fun_Type = 1
 
 

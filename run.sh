@@ -8,6 +8,11 @@ mkdir ./results/${eq_id}/mesh_source
 mkdir ./results/${eq_id}/output_ckp
 mkdir ./results/${eq_id}/output_sfc
 mkdir ./results/${eq_id}/output_pics
+mkdir ./results/${eq_id}/tmp
+mkdir ./results/${eq_id}/tmp/eachstep_x_data_fix
+mkdir ./results/${eq_id}/tmp/eachstep_y_data_fix
+mkdir ./results/${eq_id}/tmp/eachstep_z_data_fix
+mkdir ./results/${eq_id}/tmp/conpic_fix
 
 cp inputs.py ./pre-post-process/inputs.py
 cd pre-post-process
@@ -19,7 +24,7 @@ sleep 1
 echo STARTING `date`
 mpirun -n 1 ./awp-odc-os/src/pmcl3d                             \
  -X $X -Y $Y -Z $Z -x 1 -y 1                                    \
- --TMAX 40.0 --DH 400.0 --DT $DT                                \
+ --TMAX $TMAX --DH $DH --DT $DT                                \
  --NSRC 1 --NST 1000                                            \
  --IFAULT 1 --MEDIASTART 2                                      \
  --READ_STEP 101 --WRITE_STEP 1000                              \
@@ -38,7 +43,14 @@ echo "-----------------------------------------------------\n"
 
 sleep 1
 cd pre-post-process
-python3 onvisualization.py
+
+# gen pics containing velocity without land relief
+# python3 onimshow.py
+
+python3 onvisual.py
+
 rm inputs.py
 cd ..
 
+FPS=`bc <<< "1/$DT"`
+ffmpeg -threads 3 -r $FPS -i ./results/${eq_id}/tmp/conpic_fix/v%5d.png -pix_fmt yuv420p -vcodec libx264  -vf scale=1280:-2 ./results/${eq_id}/${eq_id}.mp4
