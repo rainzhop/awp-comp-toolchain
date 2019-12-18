@@ -48,9 +48,9 @@ cd pre-post-process
 # python3 onimshow.py
 
 python3 onvisual.py
-
 rm inputs.py
 cd ..
 
 FPS=`bc <<< "1/$DT"`
 ffmpeg -threads 3 -r $FPS -i ./results/${eq_id}/tmp/conpic_fix/v%5d.png -pix_fmt yuv420p -vcodec libx264  -vf scale=1280:-2 ./results/${eq_id}/${eq_id}.mp4
+

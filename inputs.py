@@ -1,34 +1,34 @@
 # 地震标识
-EQ_ID = 'ludian'
-PIC_TITLE = '2014鲁甸M6.5地震模拟'
+EQ_ID = '201906171455A'
+PIC_TITLE = '2014长宁M5.8地震模拟'
 
 # 震源
 # 震中 经度(度)、纬度(度)、深度(km)
-HypocenterLong = 103.3
-HypocenterLati = 27.1
+HypocenterLong = 104.95
+HypocenterLati = 28.38
 HypocenterDepth = 12
 # 震级 Mw
-M0 = 2.12e+25 *pow(10,25-7)
+M0 = 4.89e+24 *pow(10,25-7)
 # 震源断层面 走向 71，倾角 81，滑动角 175
-strike = 71
-dip = 81
-rake = -175
+strike = 117
+dip = 87
+rake = -2
 # 
-Mrr = -0.020*pow(10,25-7)
-Mtt =  1.310*pow(10,25-7)
-Mpp = -1.290*pow(10,25-7)
-Mrt = -0.055*pow(10,25-7)
-Mrp = -0.355*pow(10,25-7)
-Mtp = -1.640*pow(10,25-7)
+Mrr =  3.140*pow(10,25-7)
+Mtt =  2.350*pow(10,25-7)
+Mpp = -5.490*pow(10,25-7)
+Mrt = -0.174*pow(10,25-7)
+Mrp =  0.532*pow(10,25-7)
+Mtp =  2.900*pow(10,25-7)
 
 # crust1.0提取
 # 划定提取区域（左上角及右下角坐标）
 # 此处划定了一个200km*200km的区域
 # todo 此划定区域与格点尺寸和格点数有关，后续考虑改为自动划定范围
-lat1 = 28.23
-lon1 = 102.51
-lat2 = 26.43
-lon2 = 104.56
+lat1 = 29.23
+lon1 = 103.51
+lat2 = 27.43
+lon2 = 105.56
 #lat1 = HypocenterLati + 2 # 29.1
 #lon1 = HypocenterLong - 2 # 101.3
 #lat2 = HypocenterLati - 2 # 25.1
