@@ -121,30 +121,30 @@ def gen_eachstep_data():
     peak_vel_xy = np.zeros([nx, ny])
     tmpMat = np.zeros([nx, ny, 2])
     for suffix in filename_suffixes:
-        # x_filename = os.path.join(basedir, x_filename_prefix + suffix)
-        # chk_file_exist(x_filename)
+        x_filename = os.path.join(basedir, x_filename_prefix + suffix)
+        chk_file_exist(x_filename)
         # y_filename = os.path.join(basedir, y_filename_prefix+suffix)
         # chk_file_exist(y_filename)
-        z_filename = os.path.join(basedir, z_filename_prefix+suffix)
-        chk_file_exist(z_filename)
+        # z_filename = os.path.join(basedir, z_filename_prefix+suffix)
+        # chk_file_exist(z_filename)
 
-        # fx = open(x_filename, 'rb')
+        fx = open(x_filename, 'rb')
         # fy = open(y_filename, 'rb')
-        fz = open(z_filename, 'rb')
+        # fz = open(z_filename, 'rb')
         vmm = VMinMax()
         for z in range(0, write_step, n_ti_skp):
             cur_step += n_ti_skp
 
             offset = nx * ny * z * 4
-            # surf_vx = get_v(fx, offset, nx, ny)
+            surf_vx = get_v(fx, offset, nx, ny)
             # surf_vy = get_v(fy, offset, nx, ny)
             # surf_vxy = np.sqrt(surf_vx*surf_vx + surf_vy*surf_vy)
-            surf_vz = get_v(fz, offset, nx, ny)
+            # surf_vz = get_v(fz, offset, nx, ny)
 
-            # vmm.get_vx_minmax(surf_vx)
+            vmm.get_vx_minmax(surf_vx)
             # vmm.get_vy_minmax(surf_vy)
             # vmm.get_vxy_minmax(surf_vxy)
-            vmm.get_vz_minmax(surf_vz)
+            # vmm.get_vz_minmax(surf_vz)
 
             # if cur_step == 1:
             #    tmpMat[:, :, 0] = surf_vxy
@@ -153,17 +153,17 @@ def gen_eachstep_data():
             # tmpMat[:, :, 0] = peak_vel_xy
 
             print('cur_step = %d' % cur_step)
-            # eachstep_data_filename = os.path.join(path_output_x, 'awpsfc%05d.txt' % (cur_step))
-            # with open(eachstep_data_filename, 'w') as f:
-            #     for vx in surf_vx.flat:
-            #         f.write(str(vx) + '\n')
-            eachstep_data_filename = os.path.join(path_output_z, 'awpsfc%05d.txt' % (cur_step))
+            eachstep_data_filename = os.path.join(path_output_x, 'awpsfc%05d.txt' % (cur_step))
             with open(eachstep_data_filename, 'w') as f:
-               for vz in surf_vz.flat:
-                   f.write(str(vz) + '\n')
-        # fx.close()
+                for vx in surf_vx.flat:
+                    f.write(str(vx) + '\n')
+            # eachstep_data_filename = os.path.join(path_output_z, 'awpsfc%05d.txt' % (cur_step))
+            # with open(eachstep_data_filename, 'w') as f:
+            #    for vz in surf_vz.flat:
+            #        f.write(str(vz) + '\n')
+        fx.close()
         # fy.close()
-        fz.close()
+        # fz.close()
 
     # with open(pgv_data_filename, 'w') as f:
     #    for v in peak_vel_xy.flat:
@@ -193,7 +193,7 @@ def gmt_prepare():
 
 def gen_conpic():
     for i_step in range(start_step + 1, stop_step + 1, 1):
-        src_filename = os.path.join(path_src_z, 'awpsfc%05d.txt' % i_step)
+        src_filename = os.path.join(path_src_x, 'awpsfc%05d.txt' % i_step)
         chk_file_exist(src_filename)
 
         cmd = 'sh %s "%s" %05d %.1fSec "%s" "%s" "%s" "%s" "%s" "%s"' \

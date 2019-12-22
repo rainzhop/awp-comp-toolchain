@@ -1,0 +1,30 @@
+Event name: 201907040217A
+Region name: SICHUAN, CHINA
+Date (y/m/d): 2019/7/4
+
+Information on data used in inversion
+
+Wave    nsta  nrec  cutoff
+Body     108   144   40
+Mantle     0     0   0
+Surface  152   243   50
+Timing and location information
+
+         hr  min   sec       lat     lon    depth   mb   Ms
+PDEW      2   17  58.10     28.49   104.84   10.0  0.0  5.5
+CMT       2   17  59.47     28.42   104.86   12.1
+Error              0.11      0.01     0.01    0.4
+Assumed half duration:  0.9
+
+Mechanism information
+Exponent for moment tensor:  23    units: dyne-cm
+         Mrr     Mtt     Mpp     Mrt     Mrp     Mtp
+CMT     7.040  -2.560  -4.480  -2.010  -0.702  -0.661
+Error   0.134   0.093   0.105   0.265   0.283   0.070
+
+Mw = 5.1   Scalar Moment = 6.15e+23
+Fault plane:  strike=11    dip=39   slip=75
+Fault plane:  strike=210    dip=52   slip=102
+Eigenvector:  eigenvalue:  7.47   plunge: 79   azimuth: 166
+Eigenvector:  eigenvalue: -2.63   plunge:  9   azimuth:  23
+Eigenvector:  eigenvalue: -4.84   plunge:  7   azimuth: 292
