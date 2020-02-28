@@ -24,7 +24,8 @@ y_filename_prefix = input_filename_prefix
 z_filename_prefix = input_filename_prefix
 filename_suffixes = input_filename_suffix
 
-# pgv_data_filename = 'PGV_awpsfcPGVxy_fix.txt'
+pgv_data_path = os.path.join(path_tmp, 'pgv_vxy.txt')
+pga_data_path = os.path.join(path_tmp, 'pga.txt')
 # minmax_data_filename = 'awpSfcVelMinMax_fix.txt'
 
 # for gen_con_pics
@@ -117,14 +118,17 @@ class VMinMax:
 
 
 def gen_eachstep_data():
+    pgv_vxy = np.zeros([nx, ny])
+    pga = np.zeros([nx, ny])
+    tmpMat = np.zeros([nx, ny, 2]) #用于临时存放连续两步的vxy数据
+    last_vxy = np.zeros([nx, ny])
+
     cur_step = 0
-    peak_vel_xy = np.zeros([nx, ny])
-    tmpMat = np.zeros([nx, ny, 2])
     for suffix in filename_suffixes:
         x_filename = os.path.join(basedir, x_filename_prefix + suffix)
         chk_file_exist(x_filename)
-        # y_filename = os.path.join(basedir, y_filename_prefix+suffix)
-        # chk_file_exist(y_filename)
+        y_filename = os.path.join(basedir, y_filename_prefix+suffix)
+        chk_file_exist(y_filename)
         # z_filename = os.path.join(basedir, z_filename_prefix+suffix)
         # chk_file_exist(z_filename)
 
@@ -137,20 +141,30 @@ def gen_eachstep_data():
 
             offset = nx * ny * z * 4
             surf_vx = get_v(fx, offset, nx, ny)
-            # surf_vy = get_v(fy, offset, nx, ny)
-            # surf_vxy = np.sqrt(surf_vx*surf_vx + surf_vy*surf_vy)
+            surf_vy = get_v(fy, offset, nx, ny)
+            surf_vxy = np.sqrt(surf_vx**2 + surf_vy**2)
             # surf_vz = get_v(fz, offset, nx, ny)
 
-            vmm.get_vx_minmax(surf_vx)
+            # vmm.get_vx_minmax(surf_vx)
             # vmm.get_vy_minmax(surf_vy)
             # vmm.get_vxy_minmax(surf_vxy)
             # vmm.get_vz_minmax(surf_vz)
 
-            # if cur_step == 1:
-            #    tmpMat[:, :, 0] = surf_vxy
-            # tmpMat[:, :, 1] = surf_vxy
-            # peak_vel_xy = np.amax(tmpMat, axis=2)
-            # tmpMat[:, :, 0] = peak_vel_xy
+            if cur_step == n_ti_skp:
+                pgv_vxy = surf_vxy
+            else:
+                tmpMat[:, :, 0] = pgv_vxy
+                tmpMat[:, :, 1] = surf_vxy
+                pgv_vxy = np.amax(tmpMat, axis=2)
+                
+                curr_a = surf_vxy - last_vxy
+                if cur_step == n_ti_skp*2:
+                    pga = curr_a
+                else:
+                    tmpMat[:, :, 0] = pga
+                    tmpMat[:, :, 1] = curr_a
+                    pga = np.amax(tmpMat, axis=2)
+            last_vxy = surf_vxy
 
             print('cur_step = %d' % cur_step)
             eachstep_data_filename = os.path.join(path_output_x, 'awpsfc%05d.txt' % (cur_step))
@@ -165,9 +179,13 @@ def gen_eachstep_data():
         # fy.close()
         # fz.close()
 
-    # with open(pgv_data_filename, 'w') as f:
-    #    for v in peak_vel_xy.flat:
-    #        f.write(str(v) + '\n')
+    with open(pgv_data_filename, 'w') as f:
+       for v in pgv_vxy.flat:
+           f.write(str(v) + '\n')
+
+    with open(pga_data_filename, 'w') as f:
+       for v in pga.flat:
+           f.write(str(v) + '\n')
 
     # with open(minmax_data_filename, 'w') as f:
     #    f.write('# Vx Min: %0.5f\n# Vx Max: %0.5f\n' %(vmm.vx_min, vmm.vx_max))
