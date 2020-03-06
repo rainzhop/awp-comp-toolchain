@@ -133,7 +133,7 @@ def gen_eachstep_data():
         # chk_file_exist(z_filename)
 
         fx = open(x_filename, 'rb')
-        # fy = open(y_filename, 'rb')
+        fy = open(y_filename, 'rb')
         # fz = open(z_filename, 'rb')
         vmm = VMinMax()
         for z in range(0, write_step, n_ti_skp):
@@ -176,14 +176,14 @@ def gen_eachstep_data():
             #    for vz in surf_vz.flat:
             #        f.write(str(vz) + '\n')
         fx.close()
-        # fy.close()
+        fy.close()
         # fz.close()
 
-    with open(pgv_data_filename, 'w') as f:
+    with open(pgv_data_path, 'w') as f:
        for v in pgv_vxy.flat:
            f.write(str(v) + '\n')
 
-    with open(pga_data_filename, 'w') as f:
+    with open(pga_data_path, 'w') as f:
        for v in pga.flat:
            f.write(str(v) + '\n')
 
