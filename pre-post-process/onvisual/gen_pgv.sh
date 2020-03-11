@@ -1,13 +1,13 @@
 #! /bin/bash
 
 PSFILE=./pgv_vxy.ps
-SRC_DATA_FILE=/home/wch/myspace/spark-pro/awp-comp-toolchain/results/201907040217A/tmp/pgv_vxy.txt
+SRC_DATA_FILE=$1
 echo $PSFILE
-REGION=103.8/105.8/27.5/29.3
-EPIC_CENTER="104.86 28.42 12.1" # 震中位置
-TOWNS_FILE="/home/wch/myspace/spark-pro/awp-comp-toolchain/towns"
-COOR_FILE="/home/wch/myspace/spark-pro/awp-comp-toolchain/results/201907040217A/tmp/coor.txt"
-DST_FOLDER=''
+REGION=$4
+EPIC_CENTER=$5 # 震中位置
+TOWNS_FILE=$6
+COOR_FILE=$9
+DST_FOLDER=$3
 
 
 gmt makecpt -Cgrey -T-200/4000/500 >tt.cpt
@@ -44,3 +44,4 @@ gmt psconvert -A -P -TG $PSFILE
 # 现场清理
 rm $PSFILE
 rm f.txt sfcgrd.grd gmt.history
+rm tt.cpt ttt.cpt

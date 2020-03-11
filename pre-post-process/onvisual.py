@@ -26,6 +26,7 @@ filename_suffixes = input_filename_suffix
 
 pgv_data_path = os.path.join(path_tmp, 'pgv_vxy.txt')
 pga_data_path = os.path.join(path_tmp, 'pga.txt')
+path_gen_pgv_sh = os.path.abspath('./onvisual/gen_pgv.sh')
 # minmax_data_filename = 'awpSfcVelMinMax_fix.txt'
 
 # for gen_con_pics
@@ -159,10 +160,10 @@ def gen_eachstep_data():
                 
                 curr_a = surf_vxy - last_vxy
                 if cur_step == n_ti_skp*2:
-                    pga = curr_a
+                    pga = curr_a / (dt*n_ti_skp)
                 else:
                     tmpMat[:, :, 0] = pga
-                    tmpMat[:, :, 1] = curr_a
+                    tmpMat[:, :, 1] = curr_a / (dt*n_ti_skp)
                     pga = np.amax(tmpMat, axis=2)
             last_vxy = surf_vxy
 
@@ -234,6 +235,46 @@ def gen_conpic():
 
         print('%5d' % (i_step))
 
+
+def gen_pgv(): # pgv pga
+    pgv_data_path = os.path.join(path_tmp, 'pgv_vxy.txt')
+    chk_file_exist(pgv_data_path)
+    pga_data_path = os.path.join(path_tmp, 'pga.txt')
+    chk_file_exist(pga_data_path)
+
+    cmd = 'sh %s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' \
+      % (path_gen_pgv_sh,  # $0  绘图脚本文件
+         pgv_data_path,  # $1  源数据文件
+         "pgv",  # $2  图片文件名称
+         path_tmp  # $3 绘图输出目录
+         REGION,  # $4  绘图区域
+         EPIC_CENTER,  # $5  震中位置
+         TOWNS_FILE,  # $6  城镇文件
+         "PGV",  # $8  绘图标题
+         COOR_FILE,  # $9  坐标文件
+         )
+    print(cmd)
+    status = os.system(cmd)
+    if status != 0:
+        print('pgv generate error.')
+        exit()
+    
+    cmd = 'sh %s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' \
+          % (path_gen_pgv_sh,  # $0  绘图脚本文件
+    	 pga_data_path,  # $1  源数据文件
+    	 "pga",  # $2  图片文件名称
+    	 path_tmp  # $3 绘图输出目录
+    	 REGION,  # $4  绘图区域
+    	 EPIC_CENTER,  # $5  震中位置
+    	 TOWNS_FILE,  # $6  城镇文件
+    	 "PGA",  # $8  绘图标题
+    	 COOR_FILE,  # $9  坐标文件
+    	 )
+    print(cmd)
+    status = os.system(cmd)
+    if status != 0:
+        print('pga generate error.')
+	    exit()
 
 if __name__ == "__main__":
     gen_coor_txt(left_top, right_bottom, nx, ny)
