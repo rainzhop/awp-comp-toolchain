@@ -24,10 +24,12 @@ y_filename_prefix = input_filename_prefix
 z_filename_prefix = input_filename_prefix
 filename_suffixes = input_filename_suffix
 
-pgv_data_path = os.path.join(path_tmp, 'pgv_vxy.txt')
-pga_data_path = os.path.join(path_tmp, 'pga.txt')
+pgv_data_path = os.path.abspath(os.path.join(path_tmp, 'pgv_vxy.txt'))
+pga_data_path = os.path.abspath(os.path.join(path_tmp, 'pga.txt'))
 path_gen_pgv_sh = os.path.abspath('./onvisual/gen_pgv.sh')
 # minmax_data_filename = 'awpSfcVelMinMax_fix.txt'
+intensity_data_from_pgv_path = os.path.abspath(os.path.join(path_tmp, 'intensity_data_from_pgv.txt'))
+intensity_data_from_pga_path = os.path.abspath(os.path.join(path_tmp, 'intensity_data_from_pga.txt'))
 
 # for gen_con_pics
 path_src_x = os.path.abspath(path_output_x)
@@ -188,6 +190,9 @@ def gen_eachstep_data():
        for v in pga.flat:
            f.write(str(v) + '\n')
 
+    gen_intensity_from_pgv(pgv_vxy)
+    gen_intensity_from_pga(pga)
+
     # with open(minmax_data_filename, 'w') as f:
     #    f.write('# Vx Min: %0.5f\n# Vx Max: %0.5f\n' %(vmm.vx_min, vmm.vx_max))
     #    f.write('# Vy Min: %0.5f\n# Vy Max: %0.5f\n' %(vmm.vy_min, vmm.vy_max))
@@ -195,6 +200,50 @@ def gen_eachstep_data():
     #    f.write('# Vxy Min: %0.5f\n# Vxy Max: %0.5f\n' %(vmm.vxy_min, vmm.vxy_max))
 
     print('Done.')
+
+
+def gen_intensity_from_pgv(pgv):
+    with open(intensity_data_from_pgv_path, 'w') as f:
+        for v in pgv.flat:
+            if v < 0.02:
+                intensity = 4 # 4-
+            elif v < 0.05: # 0.02~0.04
+                intensity = 5
+            elif v < 0.10: # 0.05~0.09
+                intensity = 6
+            elif v < 0.19: # 0.10~0.18
+                intensity = 7
+            elif v < 0.36: # 0.19~0.35
+                intensity = 8
+            elif v < 0.72: # 0.36~0.71
+                intensity = 9
+            elif v < 1.42: # 0.72~1.41
+                intensity = 10
+            else:
+                intensity = 11 # 11+
+            f.write(str(intensity) + '\n')
+
+
+def gen_intensity_from_pga(pga):
+    with open(intensity_data_from_pga_path, 'w') as f:
+        for a in pga.flat:
+            if a < 0.22:
+                intensity = 4 # 4-
+            elif a < 0.45: # 0.22~0.44
+                intensity = 5
+            elif a < 0.90: # 0.45~0.89
+                intensity = 6
+            elif a < 1.78: # 0.90~1.77
+                intensity = 7
+            elif a < 3.54: # 1.78~3.53
+                intensity = 8
+            elif a < 7.08: # 3.54~7.07
+                intensity = 9
+            elif a < 14.15: # 7.08~14.14
+                intensity = 10
+            else:
+                intensity = 11 # 11+
+            f.write(str(intensity) + '\n')
 
 
 def chk_file_exist(filename):
@@ -237,21 +286,19 @@ def gen_conpic():
 
 
 def gen_pgv(): # pgv pga
-    pgv_data_path = os.path.join(path_tmp, 'pgv_vxy.txt')
     chk_file_exist(pgv_data_path)
-    pga_data_path = os.path.join(path_tmp, 'pga.txt')
     chk_file_exist(pga_data_path)
 
     cmd = 'sh %s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' \
       % (path_gen_pgv_sh,  # $0  绘图脚本文件
          pgv_data_path,  # $1  源数据文件
          "pgv",  # $2  图片文件名称
-         path_tmp  # $3 绘图输出目录
+         os.path.abspath(path_tmp),  # $3 绘图输出目录
          REGION,  # $4  绘图区域
-         EPIC_CENTER,  # $5  震中位置
+         EPIC_CENTER,  # $5  震中位置	
          TOWNS_FILE,  # $6  城镇文件
          "PGV",  # $8  绘图标题
-         COOR_FILE,  # $9  坐标文件
+         COOR_FILE  # $9  坐标文件
          )
     print(cmd)
     status = os.system(cmd)
@@ -263,20 +310,21 @@ def gen_pgv(): # pgv pga
           % (path_gen_pgv_sh,  # $0  绘图脚本文件
     	 pga_data_path,  # $1  源数据文件
     	 "pga",  # $2  图片文件名称
-    	 path_tmp  # $3 绘图输出目录
+    	 os.path.abspath(path_tmp),  # $3 绘图输出目录
     	 REGION,  # $4  绘图区域
     	 EPIC_CENTER,  # $5  震中位置
     	 TOWNS_FILE,  # $6  城镇文件
-    	 "PGA",  # $8  绘图标题
-    	 COOR_FILE,  # $9  坐标文件
+    	 "PGA",  # $7  绘图标题
+    	 COOR_FILE  # $8  坐标文件
     	 )
     print(cmd)
     status = os.system(cmd)
     if status != 0:
         print('pga generate error.')
-	    exit()
+        exit()
 
 if __name__ == "__main__":
+    print('cwd: ', os.getcwd())
     gen_coor_txt(left_top, right_bottom, nx, ny)
     gen_eachstep_data()
     os.chdir('./onvisual')
