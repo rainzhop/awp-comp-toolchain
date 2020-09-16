@@ -18,7 +18,7 @@
 
 ## 备忘
 
-awp-odc需要mpi+cuda环境。
+awp-odc需要mpi+cuda环境。绘图需要gmt6，脚本运行使用bash。
 
 目前在ubuntu 18.04上测试通过，使用mpich，nv驱动418，cuda版本10.0。
 
